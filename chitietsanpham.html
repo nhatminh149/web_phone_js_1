@@ -1,120 +1,225 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Thế giới điện thoại</title>
-    <link rel="shortcut icon" href="img/favicon.ico" />
+    <meta name="description" content="Chi tiết sản phẩm - Cửa hàng bán điện thoại chất lượng cao">
+    <meta name="keywords" content="sản phẩm, điện thoại, chi tiết">
+    <title>Chi tiết sản phẩm - Cửa hàng điện thoại</title>
 
-    <!-- Load font awesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        crossorigin="anonymous">
-
-	<!-- owl carousel libraries cho hình nhỏ -->
-	<link rel="stylesheet" href="js/owlcarousel/owl.carousel.min.css">
-	<link rel="stylesheet" href="js/owlcarousel/owl.theme.default.min.css">
-	<script src="js/Jquery/Jquery.min.js"></script>
-    <script src="js/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- our files -->
-    <!-- css -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/topnav.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/taikhoan.css">
-    <link rel="stylesheet" href="css/trangchu.css">
-    <link rel="stylesheet" href="css/home_products.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/modern.css">
     <link rel="stylesheet" href="css/chitietsanpham.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <!-- js -->
-    <script src="data/products.js"></script>
-    <script src="js/classes.js"></script>
-    <script src="js/dungchung.js"></script>
-    <script src="js/chitietsanpham.js"></script>
+
+    <!-- Font Awesome Icons 6.4.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
+    <!-- Header Navigation -->
+    <header class="header" role="banner">
+        <nav class="navbar" aria-label="Điều hướng chính">
+            <div class="nav-container">
+                <a href="index.html" class="logo" title="Trang chủ">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>SHOP PHONE</span>
+                </a>
 
-    <script> addTopNav(); </script>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="index.html#products">Sản phẩm</a></li>
+                    <li><a href="lienhe.html">Liên hệ</a></li>
+                </ul>
 
-    <section>
-        <script> addHeader(); </script>
-
-        <div id="productNotFound" style="min-height: 50vh; text-align: center; margin: 50px; display: none;">
-            <h1 style="color: red; margin-bottom: 10px;">Không tìm thấy sản phẩm</h1>
-            <a href="index.html" style="text-decoration: underline;">Quay lại trang chủ</a>
-        </div>
-
-        <div class="chitietSanpham" style="margin-bottom: 100px">
-            <h1>Điện thoại </h1>
-            <div class="rating"></div>
-            <div class="rowdetail group">
-                <div class="picture">
-                    <img src="" onclick="opencertain()">
-                </div>
-                <div class="price_sale">
-                    <div class="area_price"> </div>
-                    <div class="ship" style="display: none;">
-                        <img src="img/chitietsanpham/clock-152067_960_720.png">
-                        <div>NHẬN HÀNG TRONG 1 GIỜ</div>
+                <div class="nav-user">
+                    <div class="user-section" data-user-display>
+                        <button class="btn-login" onclick="toggleAuthModal(true)">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </button>
                     </div>
-                    <div class="area_promo">
-                        <strong>khuyến mãi</strong>
-                        <div class="promo">
-                            <img src="img/chitietsanpham/icon-tick.png">
-                            <div id="detailPromo"> </div>
-                        </div>
-                    </div>
-                    <div class="policy">
-                        <div>
-                            <img src="img/chitietsanpham/box.png">
-                            <p>Trong hộp có: Sạc, Tai nghe, Sách hướng dẫn, Cây lấy sim, Ốp lưng </p>
-                        </div>
-                        <div>
-                            <img src="img/chitietsanpham/icon-baohanh.png">
-                            <p>Bảo hành chính hãng 12 tháng.</p>
-                        </div>
-                        <div class="last">
-                            <img src="img/chitietsanpham/1-1.jpg">
-                            <p>1 đổi 1 trong 1 tháng nếu lỗi, đổi sản phẩm tại nhà trong 1 ngày.</p>
-                        </div>
-                    </div>
-                    <div class="area_order">
-                        <!-- nameProduct là biến toàn cục được khởi tạo giá trị trong phanTich_URL_chiTietSanPham -->
-                        <a class="buy_now" onclick="themVaoGioHang(maProduct, nameProduct);">
-                            <b><i class="fa fa-cart-plus"></i> Thêm vào giỏ hàng</b>
-                            <p>Giao trong 1 giờ hoặc nhận tại cửa hàng</p>
-                        </a>
-                    </div>
-                </div>
-                <div class="info_product">
-                    <h2>Thông số kỹ thuật</h2>
-                    <ul class="info">
-                    </ul>
+                    <a href="giohang.html" class="cart-icon" title="Giỏ hàng" aria-label="Giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" data-cart-count>0</span>
+                    </a>
                 </div>
             </div>
-            <div id="overlaycertainimg" class="overlaycertainimg">
-                <div class="close" onclick="closecertain()">&times;</div>
-                <div class="overlaycertainimg-content">
-                    <img id="bigimg" class="bigimg" src="img/chitietsanpham/oppo-f9-red-2-400x460.png">
-                    <div class="div_smallimg owl-carousel">
-                        <!-- <img src="img/chitietsanpham/oppo-f9-mau-do-1-org.jpg" onclick="changepic(this.src)">
-                        <img src="img/chitietsanpham/oppo-f9-mau-do-2-org.jpg" onclick="changepic(this.src)">
-                        <img src="img/chitietsanpham/oppo-f9-mau-do-3-org.jpg" onclick="changepic(this.src)"> -->
-                    </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container" data-product-detail>
+            <!-- Product detail will be rendered here -->
+        </div>
+    </main>
+
+    <!-- Alert Container -->
+    <div class="alert-container" data-alert-box></div>
+
+    <!-- Authentication Modal -->
+    <div class="modal" data-auth-modal id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" data-modal-close aria-label="Đóng">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-container">
+                <!-- Login Tab -->
+                <div class="auth-tab active" data-auth-tab="login">
+                    <h2>Đăng nhập</h2>
+                    <form class="auth-form" onsubmit="handleLogin(event)">
+                        <input type="text" placeholder="Tên đăng nhập" id="loginUsername" required>
+                        <input type="password" placeholder="Mật khẩu" id="loginPassword" required>
+                        <button type="submit" class="btn-primary">Đăng nhập</button>
+                        <p class="auth-toggle">Chưa có tài khoản? <a href="#" onclick="toggleAuthTab('register'); return false;">Đăng ký</a></p>
+                    </form>
+                </div>
+
+                <!-- Register Tab -->
+                <div class="auth-tab" data-auth-tab="register">
+                    <h2>Đăng ký</h2>
+                    <form class="auth-form" onsubmit="handleRegister(event)">
+                        <input type="text" placeholder="Tên đầy đủ" id="registerFullName" required>
+                        <input type="text" placeholder="Tên đăng nhập" id="registerUsername" required>
+                        <input type="email" placeholder="Email" id="registerEmail" required>
+                        <input type="password" placeholder="Mật khẩu" id="registerPassword" required>
+                        <input type="password" placeholder="Xác nhận mật khẩu" id="registerConfirm" required>
+                        <button type="submit" class="btn-primary">Đăng ký</button>
+                        <p class="auth-toggle">Đã có tài khoản? <a href="#" onclick="toggleAuthTab('login'); return false;">Đăng nhập</a></p>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="goiYSanPham"></div>
-    </section>
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Về chúng tôi</h4>
+                <p>Cửa hàng điện thoại hàng đầu Việt Nam với chất lượng tốt nhất và giá cạnh tranh.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Liên hệ</h4>
+                <p>Email: support@shopphone.com</p>
+                <p>Hotline: 1900 1234</p>
+            </div>
+            <div class="footer-section">
+                <h4>Chính sách</h4>
+                <ul>
+                    <li><a href="#policy">Chính sách bảo mật</a></li>
+                    <li><a href="#terms">Điều khoản sử dụng</a></li>
+                    <li><a href="#return">Chính sách trả hàng</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Shop Phone. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </footer>
 
-    <script>addContainTaiKhoan();</script>
+    <!-- Scripts -->
+    <script src="data/products.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/chitietsanpham-modern.js" defer></script>
 
-    <div class="footer"><script>addFooter();</script></div>
+    <script>
+        // Auth modal toggle
+        function toggleAuthModal(show) {
+            const modal = document.getElementById('authModal');
+            if (show) {
+                modal.classList.add('show');
+            } else {
+                modal.classList.remove('show');
+            }
+        }
 
+        // Auth tab switching
+        function toggleAuthTab(tab) {
+            document.querySelectorAll('[data-auth-tab]').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-auth-tab="${tab}"]`).classList.add('active');
+        }
+
+        // Close modal on outside click
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('authModal');
+            if (e.target === modal) {
+                toggleAuthModal(false);
+            }
+        });
+
+        // Modal close button
+        document.querySelector('[data-modal-close]')?.addEventListener('click', () => {
+            toggleAuthModal(false);
+        });
+
+        // Login handler
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (app && app.login(username, password)) {
+                toggleAuthModal(false);
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        // Register handler
+        function handleRegister(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('registerFullName').value;
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+
+            if (password !== confirm) {
+                if (app) app.showAlert('Mật khẩu không khớp', 'danger');
+                return;
+            }
+
+            if (app && app.register({ username, password, email, fullName })) {
+                toggleAuthTab('login');
+                document.getElementById('registerFullName').value = '';
+                document.getElementById('registerUsername').value = '';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerConfirm').value = '';
+            }
+        }
+
+        // Logout handler
+        function logout() {
+            if (app) app.logout();
+        }
+
+        // Show user info when logged in
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                if (app && app.currentUser) {
+                    const userDisplay = document.querySelector('[data-user-display]');
+                    if (userDisplay) {
+                        userDisplay.innerHTML = `
+                            <div class="user-info">
+                                <span class="username">${app.currentUser.username}</span>
+                                <button class="btn-logout" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Đăng xuất
+                                </button>
+                            </div>
+                        `;
+                    }
+                }
+            }, 500);
+        });
+    </script>
 </body>
-
 </html>

@@ -1,23 +1,661 @@
-var TONGTIEN = 0;
+// ==================== ADMIN DASHBOARD MODULE ====================
+class AdminDashboard {
+    constructor() {
+        this.totalRevenue = 0;
+        this.products = [];
+        this.adminInfo = [];
+        this.currentTab = 'Trang Chủ';
+        this.sortOrder = { decreasing: true };
+        this.init();
+    }
 
-window.onload = function () {
-    // get data từ localstorage
-    list_products = getListProducts() || list_products;
-    adminInfo = getListAdmin() || adminInfo;
+    init() {
+        this.products = getListProducts() || [];
+        this.adminInfo = getListAdmin() || [];
 
-    addEventChangeTab();
+        if (!window.localStorage.getItem('admin')) {
+            this.showAccessDenied();
+            return;
+        }
 
-    if (window.localStorage.getItem('admin')) {
-        addTableProducts();
-        addTableDonHang();
-        addTableKhachHang();
-        addThongKe();
+        this.setupEventListeners();
+        this.renderDashboard();
+        this.openTab('Trang Chủ');
+    }
 
-        openTab('Trang Chủ')
-    } else {
-        document.body.innerHTML = `<h1 style="color:red; with:100%; text-align:center; margin: 50px;"> Truy cập bị từ chối.. </h1>`;
+    showAccessDenied() {
+        document.body.innerHTML = `
+            <div class="access-denied">
+                <h1>Truy cập bị từ chối</h1>
+                <p>Bạn không có quyền truy cập trang này</p>
+            </div>
+        `;
+    }
+
+    setupEventListeners() {
+        const sidebar = document.querySelector('.sidebar');
+        if (!sidebar) return;
+
+        const navLinks = sidebar.querySelectorAll('a:not([onclick])');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabName = link.textContent.trim();
+                this.openTab(tabName);
+                this.setActiveNav(link);
+            });
+        });
+    }
+
+    setActiveNav(activeLink) {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.querySelectorAll('a').forEach(link => {
+            link.classList.remove('active');
+        });
+        activeLink.classList.add('active');
+    }
+
+    renderDashboard() {
+        this.addTableProducts();
+        this.addTableDonHang();
+        this.addTableKhachHang();
+        this.addThongKe();
+    }
+
+    openTab(tabName) {
+        this.currentTab = tabName;
+        const mainContent = document.querySelector('.main');
+        if (!mainContent) return;
+
+        const allTabs = mainContent.querySelectorAll('[class$="home"], [class$="sanpham"], [class$="donhang"], [class$="khachhang"]');
+        allTabs.forEach(tab => tab.style.display = 'none');
+
+        const tabMap = {
+            'Trang Chủ': 'home',
+            'Sản Phẩm': 'sanpham',
+            'Đơn Hàng': 'donhang',
+            'Khách Hàng': 'khachhang'
+        };
+
+        const targetTab = mainContent.querySelector(`.${tabMap[tabName]}`);
+        if (targetTab) targetTab.style.display = 'block';
+    }
+
+    // ======================== PRODUCTS MANAGEMENT ========================
+    addTableProducts() {
+        const tableContent = document.querySelector('.sanpham .table-content');
+        if (!tableContent) return;
+
+        let html = '<table class="table-outline hideImg">';
+        this.products.forEach((product, index) => {
+            html += this.createProductRow(product, index + 1);
+        });
+        html += '</table>';
+
+        tableContent.innerHTML = html;
+        this.attachProductEvents();
+    }
+
+    createProductRow(product, index) {
+        return `
+            <tr>
+                <td class="col-5">${index}</td>
+                <td class="col-10">${product.masp}</td>
+                <td class="col-40">
+                    <a title="Xem chi tiết" target="_blank" rel="noopener" 
+                       href="chitietsanpham.html?${product.name.split(' ').join('-')}">
+                        ${product.name}
+                    </a>
+                    <img src="${product.img}" alt="${product.name}">
+                </td>
+                <td class="col-15">${product.price}</td>
+                <td class="col-15">${this.formatPromo(product.promo)}</td>
+                <td class="col-15">
+                    <button class="btn-edit" data-masp="${product.masp}" title="Sửa sản phẩm">
+                        <i class="fa fa-wrench"></i>
+                    </button>
+                    <button class="btn-delete" data-masp="${product.masp}" data-name="${product.name}" title="Xóa sản phẩm">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    attachProductEvents() {
+        const tableContent = document.querySelector('.sanpham .table-content');
+        
+        tableContent.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.btn-edit');
+            const deleteBtn = e.target.closest('.btn-delete');
+
+            if (editBtn) {
+                const masp = editBtn.dataset.masp;
+                this.openEditProductForm(masp);
+            }
+
+            if (deleteBtn) {
+                const masp = deleteBtn.dataset.masp;
+                const name = deleteBtn.dataset.name;
+                this.deleteProduct(masp, name);
+            }
+        });
+    }
+
+    searchProducts(keyword, searchType) {
+        const tableContent = document.querySelector('.sanpham .table-content');
+        const rows = tableContent.querySelectorAll('tr');
+        const columnIndex = searchType === 'ma' ? 1 : 2;
+
+        rows.forEach(row => {
+            const cellText = row.querySelector(`td:nth-child(${columnIndex + 1})`).textContent.toLowerCase();
+            const isMatch = cellText.includes(keyword.toLowerCase());
+            row.style.display = isMatch ? '' : 'none';
+        });
+    }
+
+    formatPromo(promo) {
+        const promoMap = {
+            'tragop': () => `Góp ${promo.value}%`,
+            'giamgia': () => `Giảm ${promo.value}`,
+            'giareonline': () => `Online (${promo.value})`,
+            'moiramat': () => `Mới`
+        };
+        return promoMap[promo.name] ? promoMap[promo.name]() : '';
+    }
+
+    openEditProductForm(masp) {
+        const product = this.products.find(p => p.masp === masp);
+        if (!product) return;
+
+        const modal = document.getElementById('khungSuaSanPham');
+        if (!modal) return;
+
+        const companies = ["Apple", "Samsung", "Oppo", "Nokia", "Huawei", "Xiaomi", "Realme", "Vivo", "Philips", "Mobell", "Mobiistar", "Itel", "Coolpad", "HTC", "Motorola"];
+        const promoOptions = [
+            { value: '', label: 'Không' },
+            { value: 'tragop', label: 'Trả góp' },
+            { value: 'giamgia', label: 'Giảm giá' },
+            { value: 'giareonline', label: 'Giá rẻ online' },
+            { value: 'moiramat', label: 'Mới ra mắt' }
+        ];
+
+        let html = `<span class="close" onclick="dashboard.closeModal('khungSuaSanPham')">&times;</span>`;
+        html += `<table class="overlayTable table-outline table-content table-header">`;
+        html += `<tr><th colspan="2">${product.name}</th></tr>`;
+        
+        // Form fields
+        html += `<tr><td>Mã sản phẩm:</td><td><input type="text" id="editMasp" value="${product.masp}"></td></tr>`;
+        html += `<tr><td>Tên sản phẩm:</td><td><input type="text" id="editName" value="${product.name}"></td></tr>`;
+        html += `<tr><td>Hãng:</td><td><select id="editCompany">`;
+        
+        companies.forEach(c => {
+            const selected = c === product.company ? 'selected' : '';
+            html += `<option value="${c}" ${selected}>${c}</option>`;
+        });
+        
+        html += `</select></td></tr>`;
+        html += `<tr><td>Hình:</td><td><img class="hinhDaiDien" id="anhDaiDienSanPhamSua" src="${product.img}" alt="${product.name}"><input type="file" accept="image/*" onchange="dashboard.updateProductImage(this.files)"></td></tr>`;
+        html += `<tr><td>Giá tiền:</td><td><input type="text" id="editPrice" value="${stringToNum(product.price)}"></td></tr>`;
+        html += `<tr><td>Số sao:</td><td><input type="text" id="editStar" value="${product.star}"></td></tr>`;
+        html += `<tr><td>Đánh giá:</td><td><input type="text" id="editRateCount" value="${product.rateCount}"></td></tr>`;
+        html += `<tr><td>Khuyến mãi:</td><td><select id="editPromoName">`;
+        
+        promoOptions.forEach(opt => {
+            const selected = opt.value === product.promo.name ? 'selected' : '';
+            html += `<option value="${opt.value}" ${selected}>${opt.label}</option>`;
+        });
+        
+        html += `</select></td></tr>`;
+        html += `<tr><td>Giá trị khuyến mãi:</td><td><input type="text" id="editPromoValue" value="${product.promo.value}"></td></tr>`;
+        
+        // Technical specifications
+        html += `<tr><th colspan="2">Thông số kĩ thuật</th></tr>`;
+        html += `<tr><td>Màn hình:</td><td><input type="text" id="editScreen" value="${product.detail?.screen || ''}"></td></tr>`;
+        html += `<tr><td>Hệ điều hành:</td><td><input type="text" id="editOS" value="${product.detail?.os || ''}"></td></tr>`;
+        html += `<tr><td>Camera sau:</td><td><input type="text" id="editCamera" value="${product.detail?.camara || ''}"></td></tr>`;
+        html += `<tr><td>Camera trước:</td><td><input type="text" id="editCameraFront" value="${product.detail?.camaraFront || ''}"></td></tr>`;
+        html += `<tr><td>CPU:</td><td><input type="text" id="editCPU" value="${product.detail?.cpu || ''}"></td></tr>`;
+        html += `<tr><td>RAM:</td><td><input type="text" id="editRAM" value="${product.detail?.ram || ''}"></td></tr>`;
+        html += `<tr><td>Bộ nhớ trong:</td><td><input type="text" id="editROM" value="${product.detail?.rom || ''}"></td></tr>`;
+        html += `<tr><td>Thẻ nhớ:</td><td><input type="text" id="editMicroUSB" value="${product.detail?.microUSB || ''}"></td></tr>`;
+        html += `<tr><td>Dung lượng Pin:</td><td><input type="text" id="editBattery" value="${product.detail?.battery || ''}"></td></tr>`;
+        html += `<tr><td colspan="2" class="table-footer"><button onclick="dashboard.updateProduct('${masp}')">SỬA</button></td></tr>`;
+        html += `</table>`;
+
+        modal.innerHTML = html;
+        modal.style.transform = 'scale(1)';
+    }
+
+    updateProductImage(files) {
+        if (!files[0]) return;
+
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            document.getElementById('anhDaiDienSanPhamSua').src = reader.result;
+            window.editProductImage = reader.result;
+        });
+        reader.readAsDataURL(files[0]);
+    }
+
+    updateProduct(masp) {
+        const updatedProduct = {
+            masp: document.getElementById('editMasp').value,
+            name: document.getElementById('editName').value,
+            company: document.getElementById('editCompany').value,
+            img: window.editProductImage || document.getElementById('anhDaiDienSanPhamSua').src,
+            price: numToString(Number.parseInt(document.getElementById('editPrice').value, 10)),
+            star: Number.parseInt(document.getElementById('editStar').value, 10),
+            rateCount: Number.parseInt(document.getElementById('editRateCount').value, 10),
+            promo: {
+                name: document.getElementById('editPromoName').value,
+                value: document.getElementById('editPromoValue').value
+            },
+            detail: {
+                screen: document.getElementById('editScreen').value,
+                os: document.getElementById('editOS').value,
+                camara: document.getElementById('editCamera').value,
+                camaraFront: document.getElementById('editCameraFront').value,
+                cpu: document.getElementById('editCPU').value,
+                ram: document.getElementById('editRAM').value,
+                rom: document.getElementById('editROM').value,
+                microUSB: document.getElementById('editMicroUSB').value,
+                battery: document.getElementById('editBattery').value
+            }
+        };
+
+        const index = this.products.findIndex(p => p.masp === masp);
+        if (index !== -1) {
+            this.products[index] = updatedProduct;
+            setListProducts(this.products);
+            this.addTableProducts();
+            this.closeModal('khungSuaSanPham');
+            alert('Sửa sản phẩm thành công');
+        }
+    }
+
+    deleteProduct(masp, name) {
+        if (window.confirm(`Bạn có chắc muốn xóa "${name}"?`)) {
+            this.products = this.products.filter(p => p.masp !== masp);
+            setListProducts(this.products);
+            this.addTableProducts();
+        }
+    }
+
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) modal.style.transform = 'scale(0)';
+        window.editProductImage = null;
+    }
+
+    // ======================== ORDERS MANAGEMENT ========================
+    addTableDonHang() {
+        const tableContent = document.querySelector('.donhang .table-content');
+        if (!tableContent) return;
+
+        const orders = this.getOrders();
+        let html = '<table class="table-outline hideImg">';
+        this.totalRevenue = 0;
+
+        orders.forEach((order, index) => {
+            html += this.createOrderRow(order, index + 1);
+            this.totalRevenue += stringToNum(order.tongtien);
+        });
+
+        html += '</table>';
+        tableContent.innerHTML = html;
+        this.attachOrderEvents();
+    }
+
+    createOrderRow(order, index) {
+        return `
+            <tr>
+                <td class="col-5">${index}</td>
+                <td class="col-13">${order.ma}</td>
+                <td class="col-7">${order.khach}</td>
+                <td class="col-20">${order.sp}</td>
+                <td class="col-15">${order.tongtien}</td>
+                <td class="col-10">${order.ngaygio}</td>
+                <td class="col-10">${order.tinhTrang}</td>
+                <td class="col-15">
+                    <button class="btn-approve" data-order-id="${order.ma}" title="Duyệt đơn">
+                        <i class="fa fa-check"></i>
+                    </button>
+                    <button class="btn-reject" data-order-id="${order.ma}" title="Hủy đơn">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    attachOrderEvents() {
+        const tableContent = document.querySelector('.donhang .table-content');
+        
+        tableContent.addEventListener('click', (e) => {
+            const approveBtn = e.target.closest('.btn-approve');
+            const rejectBtn = e.target.closest('.btn-reject');
+
+            if (approveBtn) {
+                this.approveOrder(approveBtn.dataset.orderId, true);
+            }
+
+            if (rejectBtn) {
+                this.approveOrder(rejectBtn.dataset.orderId, false);
+            }
+        });
+    }
+
+    getOrders(returnProductList = false) {
+        const users = getListUser();
+        const orders = [];
+
+        users.forEach(user => {
+            user.donhang?.forEach(order => {
+                const total = this.calculateOrderTotal(order);
+                const orderDate = new Date(order.ngaymua).toLocaleString();
+                const products = returnProductList 
+                    ? this.getOrderProductsList(order)
+                    : this.getOrderProductsHTML(order);
+
+                orders.push({
+                    ma: order.ngaymua.toString(),
+                    khach: user.username,
+                    sp: products,
+                    tongtien: numToString(total),
+                    ngaygio: orderDate,
+                    tinhTrang: order.tinhTrang
+                });
+            });
+        });
+
+        return orders;
+    }
+
+    calculateOrderTotal(order) {
+        return order.sp?.reduce((sum, item) => {
+            const product = this.products.find(p => p.masp === item.ma);
+            if (!product) return sum;
+            const price = product.promo?.name === 'giareonline' 
+                ? stringToNum(product.promo.value) 
+                : stringToNum(product.price);
+            return sum + (price * item.soluong);
+        }, 0) || 0;
+    }
+
+    getOrderProductsHTML(order) {
+        return order.sp?.map(item => {
+            const product = this.products.find(p => p.masp === item.ma);
+            return `<p style="text-align: right">${product?.name} [${item.soluong}]</p>`;
+        }).join('') || '';
+    }
+
+    getOrderProductsList(order) {
+        return order.sp?.map(item => ({
+            sanPham: this.products.find(p => p.masp === item.ma),
+            soLuong: item.soluong
+        })) || [];
+    }
+
+    approveOrder(orderId, isApprove) {
+        const users = getListUser();
+        let found = false;
+
+        users.forEach(user => {
+            user.donhang?.forEach(order => {
+                if (order.ngaymua.toString() === orderId) {
+                    found = true;
+                    if (isApprove) {
+                        if (order.tinhTrang === 'Đang chờ xử lý') {
+                            order.tinhTrang = 'Đã giao hàng';
+                        } else if (order.tinhTrang === 'Đã hủy') {
+                            alert('Không thể duyệt đơn đã hủy!');
+                            return;
+                        }
+                    } else {
+                        if (order.tinhTrang === 'Đang chờ xử lý') {
+                            if (window.confirm('Xác nhận hủy đơn hàng này?\nHành động này không thể khôi phục!')) {
+                                order.tinhTrang = 'Đã hủy';
+                            }
+                        } else if (order.tinhTrang === 'Đã giao hàng') {
+                            alert('Không thể hủy đơn hàng đã giao!');
+                            return;
+                        }
+                    }
+                }
+            });
+        });
+
+        if (found) {
+            setListUser(users);
+            this.addTableDonHang();
+        }
+    }
+
+    filterOrdersByDate(fromDate, toDate) {
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+        const tableContent = document.querySelector('.donhang .table-content');
+        const rows = tableContent.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const dateCell = row.querySelector('td:nth-child(6)');
+            if (!dateCell) return;
+
+            const rowDate = new Date(dateCell.textContent);
+            const isInRange = rowDate >= from && rowDate <= to;
+            row.style.display = isInRange ? '' : 'none';
+        });
+    }
+
+    searchOrders(keyword, searchType) {
+        const tableContent = document.querySelector('.donhang .table-content');
+        const rows = tableContent.querySelectorAll('tr');
+        const columnMap = { 'ma': 1, 'khachhang': 2, 'trangThai': 6 };
+        const columnIndex = columnMap[searchType] || 1;
+
+        rows.forEach(row => {
+            const cellText = row.querySelector(`td:nth-child(${columnIndex + 1})`).textContent.toLowerCase();
+            const isMatch = cellText.includes(keyword.toLowerCase());
+            row.style.display = isMatch ? '' : 'none';
+        });
+    }
+
+    // ======================== CUSTOMERS MANAGEMENT ========================
+    addTableKhachHang() {
+        const tableContent = document.querySelector('.khachhang .table-content');
+        if (!tableContent) return;
+
+        const users = getListUser();
+        let html = '<table class="table-outline hideImg">';
+
+        users.forEach((user, index) => {
+            html += this.createCustomerRow(user, index + 1);
+        });
+
+        html += '</table>';
+        tableContent.innerHTML = html;
+        this.attachCustomerEvents();
+    }
+
+    createCustomerRow(user, index) {
+        const isLocked = user.off;
+        return `
+            <tr>
+                <td class="col-5">${index}</td>
+                <td class="col-20">${user.ho} ${user.ten}</td>
+                <td class="col-20">${user.email}</td>
+                <td class="col-20">${user.username}</td>
+                <td class="col-10">${user.pass}</td>
+                <td class="col-40">
+                    <label class="switch">
+                        <input type="checkbox" class="user-toggle" data-username="${user.username}" ${!isLocked ? 'checked' : ''}>
+                        <span class="slider round"></span>
+                    </label>
+                    <button class="btn-delete-user" data-username="${user.username}" title="Xóa tài khoản">
+                        <i class="fa fa-remove"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+
+    attachCustomerEvents() {
+        const tableContent = document.querySelector('.khachhang .table-content');
+        
+        tableContent.addEventListener('change', (e) => {
+            if (e.target.classList.contains('user-toggle')) {
+                const username = e.target.dataset.username;
+                this.toggleUserLock(username, e.target.checked);
+            }
+        });
+
+        tableContent.addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.btn-delete-user');
+            if (deleteBtn) {
+                this.deleteUser(deleteBtn.dataset.username);
+            }
+        });
+    }
+
+    toggleUserLock(username, isEnabled) {
+        const users = getListUser();
+        const user = users.find(u => u.username === username);
+
+        if (user) {
+            user.off = !isEnabled;
+            setListUser(users);
+            const status = !isEnabled ? 'Khóa' : 'Mở';
+            setTimeout(() => alert(`${status} tài khoản ${username} thành công`), 500);
+        }
+    }
+
+    deleteUser(username) {
+        if (!window.confirm(`Xác nhận xóa ${username}?\nMọi dữ liệu sẽ mất!`)) {
+            return;
+        }
+
+        const users = getListUser();
+        const index = users.findIndex(u => u.username === username);
+
+        if (index !== -1) {
+            users.splice(index, 1);
+            setListUser(users);
+            localStorage.removeItem('CurrentUser');
+            this.addTableKhachHang();
+            this.addTableDonHang();
+        }
+    }
+
+    searchCustomers(keyword, searchType) {
+        const tableContent = document.querySelector('.khachhang .table-content');
+        const rows = tableContent.querySelectorAll('tr');
+        const columnMap = { 'ten': 1, 'email': 2, 'taikhoan': 3 };
+        const columnIndex = columnMap[searchType] || 1;
+
+        rows.forEach(row => {
+            const cellText = row.querySelector(`td:nth-child(${columnIndex + 1})`).textContent.toLowerCase();
+            const isMatch = cellText.includes(keyword.toLowerCase());
+            row.style.display = isMatch ? '' : 'none';
+        });
+    }
+
+    // ======================== STATISTICS & CHARTS ========================
+    addThongKe() {
+        const orders = this.getOrders(true);
+        const statistics = this.calculateStatistics(orders);
+
+        this.renderChart(
+            'myChart1',
+            'Số lượng bán ra',
+            'bar',
+            Object.keys(statistics),
+            Object.values(statistics).map(s => s.quantity),
+            this.generateColors(Object.keys(statistics).length)
+        );
+
+        this.renderChart(
+            'myChart2',
+            'Doanh thu',
+            'doughnut',
+            Object.keys(statistics),
+            Object.values(statistics).map(s => s.revenue),
+            this.generateColors(Object.keys(statistics).length)
+        );
+    }
+
+    calculateStatistics(orders) {
+        const stats = {};
+
+        orders.forEach(order => {
+            if (order.sp.find(item => item.sanPham?.tinhTrang === 'Đã hủy')) return;
+
+            order.sp.forEach(item => {
+                const company = item.sanPham?.company;
+                if (!company) return;
+
+                if (!stats[company]) {
+                    stats[company] = { quantity: 0, revenue: 0 };
+                }
+
+                const price = stringToNum(item.sanPham.price);
+                stats[company].quantity += item.soLuong;
+                stats[company].revenue += price * item.soLuong;
+            });
+        });
+
+        return stats;
+    }
+
+    generateColors(count) {
+        return Array.from({ length: count }, () => this.getRandomColor());
+    }
+
+    getRandomColor() {
+        const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    renderChart(canvasId, title, chartType, labels, data, colors) {
+        const ctx = document.getElementById(canvasId)?.getContext('2d');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: data,
+                    backgroundColor: colors,
+                    borderColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: title,
+                        font: { size: 16 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     }
 }
+
+// Initialize dashboard on page load
+let dashboard;
+document.addEventListener('DOMContentLoaded', () => {
+    dashboard = new AdminDashboard();
+});
 
 function logOutAdmin() {
     window.localStorage.removeItem('admin');
@@ -194,11 +832,11 @@ function addTableProducts() {
             <td style="width: 15%">` + promoToStringValue(p.promo) + `</td>
             <td style="width: 15%">
                 <div class="tooltip">
-                    <i class="fa fa-wrench" onclick="addKhungSuaSanPham('` + p.masp + `')"></i>
+                    <i style = "background:pink;" class="fa fa-wrench"  onclick="addKhungSuaSanPham('` + p.masp + `')"></i>
                     <span class="tooltiptext">Sửa</span>
                 </div>
                 <div class="tooltip">
-                    <i class="fa fa-trash" onclick="xoaSanPham('` + p.masp + `', '`+p.name+`')"></i>
+                    <i style = "background:blue;" class="fa fa-trash" onclick="xoaSanPham('` + p.masp + `', '`+p.name+`')"></i>
                     <span class="tooltiptext">Xóa</span>
                 </div>
             </td>
@@ -574,11 +1212,11 @@ function addTableDonHang() {
             <td style="width: 10%">` + d.tinhTrang + `</td>
             <td style="width: 10%">
                 <div class="tooltip">
-                    <i class="fa fa-check" onclick="duyet('`+d.ma+`', true)"></i>
+                    <i style="background:pink" class="fa fa-check" onclick="duyet('`+d.ma+`', true)"></i>
                     <span class="tooltiptext">Duyệt</span>
                 </div>
                 <div class="tooltip">
-                    <i class="fa fa-remove" onclick="duyet('`+d.ma+`', false)"></i>
+                    <i style="background:blue" class="fa fa-remove" onclick="duyet('`+d.ma+`', false)"></i>
                     <span class="tooltiptext">Hủy</span>
                 </div>
                 
@@ -748,7 +1386,7 @@ function addTableKhachHang() {
             <td style="width: 20%">` + u.email + `</td>
             <td style="width: 20%">` + u.username + `</td>
             <td style="width: 10%">` + u.pass + `</td>
-            <td style="width: 10%">
+            <td style="width: 40%">
                 <div class="tooltip">
                     <label class="switch">
                         <input type="checkbox" `+(u.off?'':'checked')+` onclick="voHieuHoaNguoiDung(this, '`+u.username+`')">
@@ -847,73 +1485,3 @@ function getValueOfTypeInTable_KhachHang(tr, loai) {
     return false;
 }
 
-// ================== Sort ====================
-// https://github.com/HoangTran0410/First_html_css_js/blob/master/sketch.js
-var decrease = true; // Sắp xếp giảm dần
-
-// loại là tên cột, func là hàm giúp lấy giá trị từ cột loai
-function quickSort(arr, left, right, loai, func) {
-    var pivot,
-        partitionIndex;
-
-    if (left < right) {
-        pivot = right;
-        partitionIndex = partition(arr, pivot, left, right, loai, func);
-
-        //sort left and right
-        quickSort(arr, left, partitionIndex - 1, loai, func);
-        quickSort(arr, partitionIndex + 1, right, loai, func);
-    }
-    return arr;
-}
-
-function partition(arr, pivot, left, right, loai, func) {
-    var pivotValue =  func(arr[pivot], loai),
-        partitionIndex = left;
-    
-    for (var i = left; i < right; i++) {
-        if (decrease && func(arr[i], loai) > pivotValue
-        || !decrease && func(arr[i], loai) < pivotValue) {
-            swap(arr, i, partitionIndex);
-            partitionIndex++;
-        }
-    }
-    swap(arr, right, partitionIndex);
-    return partitionIndex;
-}
-
-function swap(arr, i, j) {
-    var tempi = arr[i].cloneNode(true);
-    var tempj = arr[j].cloneNode(true);
-    arr[i].parentNode.replaceChild(tempj, arr[i]);
-    arr[j].parentNode.replaceChild(tempi, arr[j]);
-}
-
-// ================= các hàm thêm ====================
-// Chuyển khuyến mãi vễ dạng chuỗi tiếng việt
-function promoToStringValue(pr) {
-    switch (pr.name) {
-        case 'tragop':
-            return 'Góp ' + pr.value + '%';
-        case 'giamgia':
-            return 'Giảm ' + pr.value;
-        case 'giareonline':
-            return 'Online (' + pr.value + ')';
-        case 'moiramat':
-            return 'Mới';
-    }
-    return '';
-}
-
-function progress(percent, bg, width, height) {
-
-    return `<div class="progress" style="width: ` + width + `; height:` + height + `">
-                <div class="progress-bar bg-info" style="width: ` + percent + `%; background-color:` + bg + `"></div>
-            </div>`
-}
-
-// for(var i = 0; i < list_products.length; i++) {
-//     list_products[i].masp = list_products[i].company.substring(0, 3) + vitriCompany(list_products[i], i);
-// }
-
-// console.log(JSON.stringify(list_products));

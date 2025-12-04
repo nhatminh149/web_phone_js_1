@@ -1,120 +1,291 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-	<title>Thế giới điện thoại</title>
+	<meta name="description" content="Cửa hàng điện thoại trực tuyến - Mua điện thoại chính hãng với giá tốt nhất">
+	<meta name="keywords" content="điện thoại, smartphone, iPhone, Samsung, Oppo, Xiaomi">
+	<title>Thế giới điện thoại - Cửa hàng điện thoại online</title>
 	<link rel="shortcut icon" href="img/favicon.ico" />
 
-	<!-- Load font awesome icons -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-	 crossorigin="anonymous">
+	<!-- Font Awesome Icons 6.4.0 -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
 
-	<!-- owl carousel libraries -->
+	<!-- Owl Carousel -->
 	<link rel="stylesheet" href="js/owlcarousel/owl.carousel.min.css">
 	<link rel="stylesheet" href="js/owlcarousel/owl.theme.default.min.css">
-	<script src="js/Jquery/Jquery.min.js"></script>
-	<script src="js/owlcarousel/owl.carousel.min.js"></script>
 
-	<!-- tidio - live chat -->
-	<!-- <script src="//code.tidio.co/bfiiplaaohclhqwes5xivoizqkq56guu.js"></script> -->
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="css/modern.css">
+	<link rel="stylesheet" href="css/giohang.css">
+	<link rel="stylesheet" href="css/chitietsanpham.css">
 
-	<!-- our files -->
-	<!-- css -->
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/topnav.css">
-	<link rel="stylesheet" href="css/header.css">
-	<link rel="stylesheet" href="css/banner.css">
-	<link rel="stylesheet" href="css/taikhoan.css">
-	<link rel="stylesheet" href="css/trangchu.css">
-	<link rel="stylesheet" href="css/home_products.css">
-	<link rel="stylesheet" href="css/pagination_phantrang.css">
-	<link rel="stylesheet" href="css/footer.css">
-	<!-- js -->
-	<script src="data/products.js"></script>
-	<script src="js/classes.js"></script>
-	<script src="js/dungchung.js"></script>
-	<script src="js/trangchu.js"></script>
-
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-	<script> addTopNav(); </script>
+	<!-- Header Navigation -->
+	<header class="header" role="banner">
+		<nav class="navbar" aria-label="Điều hướng chính">
+			<div class="nav-container">
+				<a href="index.html" class="logo" title="Trang chủ">
+					<i class="fas fa-mobile-alt"></i>
+					<span>SHOP PHONE</span>
+				</a>
 
-	<section>
-		<script> addHeader(); </script>
+				<ul class="nav-menu">
+					<li><a href="index.html">Trang chủ</a></li>
+					<li><a href="index.html#products">Sản phẩm</a></li>
+					<li><a href="lienhe.html">Liên hệ</a></li>
+				</ul>
 
-		<div class="banner">
-			<div class="owl-carousel owl-theme"></div>
-		</div> <!-- End Banner -->
-
-		<img src="img/banners/blackFriday.gif" alt="" style="width: 100%;">
-
-		<br>
-		<div class="companyMenu group flexContain"></div>
-
-		<div class="flexContain">
-
-			<div class="pricesRangeFilter dropdown">
-				<button class="dropbtn">Giá tiền</button>
-				<div class="dropdown-content"></div>
+				<div class="nav-user">
+					<div class="user-section" data-user-display>
+						<button class="btn-login" onclick="toggleAuthModal(true)">
+							<i class="fas fa-sign-in-alt"></i>
+							Đăng nhập
+						</button>
+					</div>
+					<a href="giohang.html" class="cart-icon" title="Giỏ hàng" aria-label="Giỏ hàng">
+						<i class="fas fa-shopping-cart"></i>
+						<span class="cart-badge" data-cart-count>0</span>
+					</a>
+				</div>
 			</div>
+		</nav>
+	</header>
 
-			<div class="promosFilter dropdown">
-				<button class="dropbtn">Khuyến mãi</button>
-				<div class="dropdown-content"></div>
-			</div>
+	<!-- Main Content -->
+	<main class="main-content">
+		<div class="container">
+			<!-- Banner Section -->
+			<section class="banner-section">
+				<div class="owl-carousel owl-theme carousel-banner"></div>
+			</section>
 
-			<div class="starFilter dropdown">
-				<button class="dropbtn">Số lượng sao</button>
-				<div class="dropdown-content"></div>
-			</div>
+			<!-- Filter Section -->
+			<section class="filter-section" aria-label="Bộ lọc sản phẩm">
+				<div class="filter-controls">
+					<div class="filter-group">
+						<button class="filter-btn" data-filter="company" aria-label="Lọc theo hãng">
+							<i class="fas fa-building"></i> Hãng
+						</button>
+					</div>
+					<div class="filter-group">
+						<button class="filter-btn" data-filter="price" aria-label="Lọc theo giá">
+							<i class="fas fa-money-bill"></i> Giá tiền
+						</button>
+					</div>
+					<div class="filter-group">
+						<button class="filter-btn" data-filter="promo" aria-label="Lọc theo khuyến mãi">
+							<i class="fas fa-gift"></i> Khuyến mãi
+						</button>
+					</div>
+					<button class="btn-clear-filters" data-clear-all aria-label="Xóa tất cả bộ lọc">
+						<i class="fas fa-times"></i> Xóa bộ lọc
+					</button>
+				</div>
+			</section>
 
-			<div class="sortFilter dropdown">
-				<button class="dropbtn">Sắp xếp</button>
-				<div class="dropdown-content"></div>
-			</div>
+			<!-- Active Filters -->
+			<section class="active-filters" data-active-filters aria-label="Bộ lọc đang hoạt động"></section>
 
-		</div> <!-- End khung chọn bộ lọc -->
+			<!-- Products Section -->
+			<section class="products-section" id="products">
+				<div class="search-box">
+					<input 
+						type="text" 
+						class="search-input" 
+						placeholder="Tìm kiếm sản phẩm..." 
+						aria-label="Tìm kiếm sản phẩm"
+						data-search
+					>
+					<i class="fas fa-search search-icon"></i>
+				</div>
 
-		<div class="choosedFilter flexContain">
-			<a id="deleteAllFilter" style="display: none;">
-				<h3>Xóa bộ lọc</h3>
-			</a>
-		</div> <!-- Những bộ lọc đã chọn -->
-		<hr>
+				<div class="products-container" data-products-list>
+					<!-- Products will be rendered here -->
+				</div>
 
-		<!-- Mặc định mới vào trang sẽ ẩn đi, nế có filter thì mới hiện lên -->
-		<div class="contain-products" style="display:none"> 
-			<div class="filterName">
-				<input type="text" placeholder="Lọc trong trang theo tên..." onkeyup="filterProductsName(this)">
-			</div> <!-- End FilterName -->
+				<!-- Empty State -->
+				<div class="empty-state" data-empty-state hidden>
+					<i class="fas fa-inbox"></i>
+					<p>Không tìm thấy sản phẩm nào</p>
+					<button class="btn-reset" onclick="location.reload()">Tải lại</button>
+				</div>
 
-			<ul id="products" class="homeproduct group flexContain">
-				<div id="khongCoSanPham">
-					<i class="fa fa-times-circle"></i>
-					Không có sản phẩm nào
-				</div> <!-- End Khong co san pham -->
-			</ul><!-- End products -->
-
-			<div class="pagination"></div>
+				<!-- Pagination -->
+				<nav class="pagination" data-pagination aria-label="Phân trang"></nav>
+			</section>
 		</div>
+	</main>
 
-		<!-- Div hiển thị khung sp hot, khuyến mãi, mới ra mắt ... -->
-		<div class="contain-khungSanPham" ></div>
+	<!-- Authentication Modal -->
+	<div class="modal" data-auth-modal id="authModal">
+		<div class="modal-content">
+			<button class="modal-close" data-modal-close aria-label="Đóng">
+				<i class="fas fa-times"></i>
+			</button>
+			<div class="auth-container">
+				<!-- Login Tab -->
+				<div class="auth-tab active" data-auth-tab="login">
+					<h2>Đăng nhập</h2>
+					<form class="auth-form" onsubmit="handleLogin(event)">
+						<input type="text" placeholder="Tên đăng nhập" id="loginUsername" required>
+						<input type="password" placeholder="Mật khẩu" id="loginPassword" required>
+						<button type="submit" class="btn-primary">Đăng nhập</button>
+						<p class="auth-toggle">Chưa có tài khoản? <a href="#" onclick="toggleAuthTab('register'); return false;">Đăng ký</a></p>
+					</form>
+				</div>
 
-	</section> <!-- End Section -->
+				<!-- Register Tab -->
+				<div class="auth-tab" data-auth-tab="register">
+					<h2>Đăng ký</h2>
+					<form class="auth-form" onsubmit="handleRegister(event)">
+						<input type="text" placeholder="Tên đầy đủ" id="registerFullName" required>
+						<input type="text" placeholder="Tên đăng nhập" id="registerUsername" required>
+						<input type="email" placeholder="Email" id="registerEmail" required>
+						<input type="password" placeholder="Mật khẩu" id="registerPassword" required>
+						<input type="password" placeholder="Xác nhận mật khẩu" id="registerConfirm" required>
+						<button type="submit" class="btn-primary">Đăng ký</button>
+						<p class="auth-toggle">Đã có tài khoản? <a href="#" onclick="toggleAuthTab('login'); return false;">Đăng nhập</a></p>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Alert Container -->
+	<div class="alert-container" data-alert-box></div>
+
+	<!-- Footer -->
+	<footer class="footer" role="contentinfo">
+		<div class="footer-content">
+			<div class="footer-section">
+				<h4>Về chúng tôi</h4>
+				<p>Cửa hàng điện thoại hàng đầu Việt Nam với chất lượng tốt nhất và giá cạnh tranh.</p>
+			</div>
+			<div class="footer-section">
+				<h4>Liên hệ</h4>
+				<p>Email: support@shopphone.com</p>
+				<p>Hotline: 1900 1234</p>
+			</div>
+			<div class="footer-section">
+				<h4>Chính sách</h4>
+				<ul>
+					<li><a href="#policy">Chính sách bảo mật</a></li>
+					<li><a href="#terms">Điều khoản sử dụng</a></li>
+					<li><a href="#return">Chính sách trả hàng</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<p>&copy; 2024 Shop Phone. Tất cả các quyền được bảo lưu.</p>
+		</div>
+	</footer>
+
+	<!-- Scripts -->
+	<script src="js/Jquery/Jquery.min.js" defer></script>
+	<script src="js/owlcarousel/owl.carousel.min.js" defer></script>
+	<script src="data/products.js" defer></script>
+	<script src="js/app.js" defer></script>
+	<script src="js/trangchu-modern.js" defer></script>
 
 	<script>
-		addContainTaiKhoan(); addPlc();
+		// Auth modal toggle
+		function toggleAuthModal(show) {
+			const modal = document.getElementById('authModal');
+			if (show) {
+				modal.classList.add('show');
+			} else {
+				modal.classList.remove('show');
+			}
+		}
+
+		// Auth tab switching
+		function toggleAuthTab(tab) {
+			document.querySelectorAll('[data-auth-tab]').forEach(el => {
+				el.classList.remove('active');
+			});
+			document.querySelector(`[data-auth-tab="${tab}"]`).classList.add('active');
+		}
+
+		// Close modal on outside click
+		document.addEventListener('click', (e) => {
+			const modal = document.getElementById('authModal');
+			if (e.target === modal) {
+				toggleAuthModal(false);
+			}
+		});
+
+		// Modal close button
+		document.querySelector('[data-modal-close]')?.addEventListener('click', () => {
+			toggleAuthModal(false);
+		});
+
+		// Login handler
+		function handleLogin(event) {
+			event.preventDefault();
+			const username = document.getElementById('loginUsername').value;
+			const password = document.getElementById('loginPassword').value;
+			
+			if (app && app.login(username, password)) {
+				toggleAuthModal(false);
+				document.getElementById('loginUsername').value = '';
+				document.getElementById('loginPassword').value = '';
+			}
+		}
+
+		// Register handler
+		function handleRegister(event) {
+			event.preventDefault();
+			const fullName = document.getElementById('registerFullName').value;
+			const username = document.getElementById('registerUsername').value;
+			const email = document.getElementById('registerEmail').value;
+			const password = document.getElementById('registerPassword').value;
+			const confirm = document.getElementById('registerConfirm').value;
+
+			if (password !== confirm) {
+				if (app) app.showAlert('Mật khẩu không khớp', 'danger');
+				return;
+			}
+
+			if (app && app.register({ username, password, email, fullName })) {
+				toggleAuthTab('login');
+				document.getElementById('registerFullName').value = '';
+				document.getElementById('registerUsername').value = '';
+				document.getElementById('registerEmail').value = '';
+				document.getElementById('registerPassword').value = '';
+				document.getElementById('registerConfirm').value = '';
+			}
+		}
+
+		// Logout handler
+		function logout() {
+			if (app) app.logout();
+		}
+
+		// Show user info when logged in
+		window.addEventListener('load', () => {
+			setTimeout(() => {
+				if (app && app.currentUser) {
+					const userDisplay = document.querySelector('[data-user-display]');
+					if (userDisplay) {
+						userDisplay.innerHTML = `
+							<div class="user-info">
+								<span class="username">${app.currentUser.username}</span>
+								<button class="btn-logout" onclick="logout()">
+									<i class="fas fa-sign-out-alt"></i>
+									Đăng xuất
+								</button>
+							</div>
+						`;
+					}
+				}
+			}, 500);
+		});
 	</script>
-
-	<div class="footer"><script>addFooter();</script></div>
-
-	<i class="fa fa-arrow-up" id="goto-top-page" onclick="gotoTop()"></i>
 </body>
-
 </html>

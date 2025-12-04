@@ -129,12 +129,12 @@ return {
 				<table cellpadding="7">
 					<tr>
 						<td>Tên sản phẩm:</td>
-						<td><input id="name" type="text" onchange=""></td>
+						<td><input id="name" type="text" title="Tên sản phẩm" placeholder="Nhập tên sản phẩm" onchange=""></td>
 					</tr>
 					<tr>
 						<td>Tên Hãng:</td>
 						<td>
-							<select name="" id="company">
+							<select name="" id="company" title="Chọn hãng sản phẩm">
 								<option value="Apple">Apple</option>
 								<option value="Samsung">Samsung</option>
 								<option value="Oppo">Oppo</option>
@@ -155,24 +155,24 @@ return {
 					</tr>
 					<tr>
 						<td>Tên file ảnh</td>
-						<td><input id="img" type="text"></td>
+						<td><input id="img" type="text" title="Tên file ảnh" placeholder="VD: phone-a1.jpg"></td>
 					</tr>
 					<tr>
 						<td>Giá tiền:</td>
-						<td><input id="price" type="text"></td>
+						<td><input id="price" type="text" title="Giá tiền" placeholder="VD: 4990000"></td>
 					</tr>
 					<tr>
 						<td>Đánh giá (mấy sao):</td>
-						<td><input id="star" type="text"></td>
+						<td><input id="star" type="text" title="Số sao" placeholder="0-5"></td>
 					</tr>
 					<tr>
 						<td>Số lượt đánh giá:</td>
-						<td><input id="rateCount" type="text"></td>
+						<td><input id="rateCount" type="text" title="Số lượt đánh giá" placeholder="VD: 150"></td>
 					</tr>
 					<tr>
 						<td>Khuyến mãi:</td>
 						<td>
-							<select name="km" id="promoName" onchange="valueChange()">
+							<select name="km" id="promoName" title="Chọn loại khuyến mãi" onchange="valueChange()">
 								<option value="">Không khuyến mãi</option>
 								<option value="tragop">Trả góp</option>
 								<option value="giamgia">Giảm giá</option>
@@ -184,7 +184,7 @@ return {
 					</tr>
 					<tr>
 						<td>Giá trị khuyến mãi:</td>
-						<td><input id="promoValue" type="text"></td>
+						<td><input id="promoValue" type="text" title="Giá trị khuyến mãi" placeholder="VD: 10% hoặc 500000"></td>
 					</tr>
 				</table>
 			</td>
@@ -206,7 +206,7 @@ return {
 		<tr>
 			<td colspan="2">
 				<p>Kết quả Database:</p>
-				<textarea rows="13" cols="70" id="t_a"></textarea>
+				<textarea rows="13" cols="70" id="t_a" title="Kết quả JSON sản phẩm" placeholder="Kết quả sẽ hiển thị tại đây"></textarea>
 			</td>
 		</tr>
 	</table>
