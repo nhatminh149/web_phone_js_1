@@ -13,10 +13,10 @@ class AdminDashboard {
         this.products = getListProducts() || [];
         this.adminInfo = getListAdmin() || [];
 
-        if (!window.localStorage.getItem('admin')) {
-            this.showAccessDenied();
-            return;
-        }
+        // if (!window.localStorage.getItem('admin')) {
+        //     this.showAccessDenied();
+        //     return;
+        // }
 
         this.setupEventListeners();
         this.renderDashboard();

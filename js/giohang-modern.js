@@ -38,12 +38,20 @@ class ShoppingCartModule {
         container.addEventListener('change', (e) => {
             const quantityInput = e.target.closest('[data-quantity-input]');
             if (quantityInput) {
-                console.log('[ShoppingCart] Quantity changed:', quantityInput.dataset.quantityInput);
                 const productId = quantityInput.dataset.quantityInput;
                 const quantity = parseInt(quantityInput.value);
                 this.updateQuantity(productId, quantity);
             }
         });
+
+        // Checkout button (outside cart items container)
+        const checkoutBtn = document.querySelector('[data-checkout]');
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.checkout();
+            });
+        }
     }
 
     removeItem(productId) {
@@ -179,8 +187,44 @@ class ShoppingCartModule {
             return;
         }
 
-        // Redirect to checkout page or show checkout modal
-        window.location.href = 'giohang.html';
+        // Ensure user is logged in
+        if (!app || !app.currentUser) {
+            app?.showAlert('Vui lòng đăng nhập để thanh toán', 'warning');
+            app?.toggleAuthModal(true);
+            return;
+        }
+
+        // Try to read shipping form on the page
+        const shippingForm = document.querySelector('.shipping-card .shipping-form');
+        let name = '';
+        let phone = '';
+        let email = '';
+        let address = '';
+        if (shippingForm) {
+            const fields = shippingForm.querySelectorAll('.shipping-input');
+            name = (fields[0]?.value || '').trim();
+            phone = (fields[1]?.value || '').trim();
+            email = (fields[2]?.value || '').trim();
+            address = (fields[3]?.value || '').trim();
+        }
+
+        if (!name || !phone || !address) {
+            app.showAlert('Vui lòng điền thông tin giao hàng trong phần "Thông tin giao hàng".', 'warning');
+            return;
+        }
+
+        const shippingInfo = { name, phone, email, address };
+
+        const ok = app.createOrder(shippingInfo);
+        if (ok) {
+            // Reload cart state from app
+            this.loadCart();
+            this.render();
+            app.showAlert('Đặt hàng thành công. Đang chuyển tới trang người dùng...', 'success', 2500);
+            setTimeout(() => { window.location.href = 'nguoidung.html'; }, 800);
+        } else {
+            app.showAlert('Không thể tạo đơn hàng, vui lòng thử lại', 'danger');
+        }
     }
 }
 

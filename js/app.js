@@ -23,6 +23,19 @@ class AppModule {
             
             // Load or initialize users
             this.users = this.getFromStorage('ListUser') || this.getDefaultUsers();
+            // Ensure admin account exists and has a password so admin login works
+            try {
+                const adminIdx = this.users.findIndex(u => u.username === 'admin');
+                if (adminIdx === -1) {
+                    this.users.push({ username: 'admin', pass: 'admin123', email: 'admin@email.com', fullName: 'Admin', products: [], off: false });
+                    this.setInStorage('ListUser', this.users);
+                } else if (!this.users[adminIdx].pass) {
+                    this.users[adminIdx].pass = 'admin123';
+                    this.setInStorage('ListUser', this.users);
+                }
+            } catch (err) {
+                console.error('Error ensuring admin user:', err);
+            }
             
             // Restore current user session
             const storedCurrentUser = this.getFromStorage('CurrentUser');
@@ -76,35 +89,45 @@ class AppModule {
     }
 
     // ==================== AUTHENTICATION ====================
-    login(username, password) {
-        const user = this.users.find(u => u.username === username && u.pass === password);
+login(username, password) {
+    const user = this.users.find(u => u.username === username && u.pass === password);
 
-        if (!user) {
-            this.showAlert('Tên đăng nhập hoặc mật khẩu không chính xác', 'danger');
-            return false;
-        }
-
-        if (user.off) {
-            this.showAlert('Tài khoản của bạn đang bị khóa', 'warning');
-            return false;
-        }
-
-        if (!user.products) user.products = [];
-
-        this.currentUser = user;
-        this.setInStorage('CurrentUser', this.currentUser);
-        this.showAlert('Đăng nhập thành công', 'success');
-        this.updateUI();
-        return true;
+    if (!user) {
+        this.showAlert('Tên đăng nhập hoặc mật khẩu không chính xác', 'danger');
+        return false;
     }
 
-    logout() {
-        this.currentUser = null;
-        localStorage.removeItem('CurrentUser');
-        this.showAlert('Đã đăng xuất', 'info');
-        this.updateUI();
+    if (user.off) {
+        this.showAlert('Tài khoản của bạn đang bị khóa', 'warning');
+        return false;
     }
 
+    if (!user.products) user.products = [];
+
+    this.currentUser = user;
+    this.setInStorage('CurrentUser', this.currentUser);
+    
+    // XÓA PHẦN NÀY - không cần thiết
+    // if (username === 'admin') {
+    //     localStorage.setItem('admin', JSON.stringify(user));
+    // }
+    
+    this.showAlert('Đăng nhập thành công', 'success');
+    this.updateUI();
+    return true;
+}
+
+logout() {
+    // XÓA PHẦN NÀY
+    // if (this.currentUser && this.currentUser.username === 'admin') {
+    //     localStorage.removeItem('admin');
+    // }
+    
+    this.currentUser = null;
+    localStorage.removeItem('CurrentUser');
+    this.showAlert('Đã đăng xuất', 'info');
+    this.updateUI();
+}
     register(userData) {
         const { username, password, email, fullName } = userData;
 

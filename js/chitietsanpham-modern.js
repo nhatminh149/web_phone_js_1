@@ -148,7 +148,7 @@ class ProductDetailModule {
                 <span aria-current="page">${this.product.name}</span>
             </nav>
 
-            <div class="product-detail-container">
+            <div style="width:1000px;margin-left:600px" class="product-detail-container">
                 <!-- Product Images -->
                 <div class="product-images">
 

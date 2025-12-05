@@ -13,17 +13,16 @@
         crossorigin="anonymous">
 
     <!-- our files -->
-    <!-- css -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/topnav.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/taikhoan.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/tintuc.css">
-
+    <link rel="stylesheet" href="css/modern.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <style>
+        .news-grid { display:flex; gap:1rem; flex-wrap:wrap; }
+        .news-card { background:white; padding:1rem; border-radius:8px; box-shadow:var(--shadow-sm); flex:1 1 240px; }
+        .news-card img{ width:100%; height:150px; object-fit:cover; border-radius:6px; }
+    </style>
     <!-- js -->
     <script src="data/products.js"></script>
-	<script src="js/dungchung.js"></script>
+    <script src="js/dungchung.js"></script>
     <script>
         window.onload = function () {
             khoiTao();
@@ -36,63 +35,89 @@
 </head>
 
 <body>
-    <script> addTopNav();</script>
+    <!-- Modern header/navigation -->
+    <header class="header" role="banner">
+        <nav class="navbar" aria-label="Điều hướng chính">
+            <div class="nav-container">
+                <a href="index.html" class="logo" title="Trang chủ">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>SHOP PHONE</span>
+                </a>
 
-    <section class="section-min-height">
-        <script> addHeader(); </script>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="index.html#products">Sản phẩm</a></li>
+                    <li><a href="lienhe.html">Liên hệ</a></li>
+                </ul>
 
-        <div class="body-tintuc">
-            <div class="tintuc-info">
-                <a href="http://doanhnghiepvn.vn/cong-nghe/danh-gia-smartphone-chip-s660-ram-8-gb-gia-6-99-trieu-tai-viet-nam/2018112603315443" target="_blank" rel="noopener">
-                    <img src="img/tintuc/tintuc1.png" alt="Tin tức 1">
-                    <h2>Đánh giá smartphone chip S660, RAM 8 GB, giá 6,99 triệu tại Việt Nam</h2>
-                </a>
-                <br/>
-                <h5>Doanh ngiệp &emsp;3 giờ</h5>
+                <div class="nav-user">
+                    <div class="user-section" data-user-display>
+                        <button class="btn-login" onclick="toggleAuthModal(true)">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </button>
+                    </div>
+                    <a href="giohang.html" class="cart-icon" title="Giỏ hàng" aria-label="Giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" data-cart-count>0</span>
+                    </a>
+                </div>
             </div>
-            <div class="tintuc-info">
-                <a href="https://thanhnien.vn/cong-nghe/kham-pha-smartphone-man-hinh-gap-duoc-dau-tien-cua-samsung-1027111.html" target="_blank" rel="noopener">
-                    <img src="img/tintuc/tintuc2.png" alt="Tin tức 2">
-                    <h2>Khám phá smartphone màn hình gập được đầu tiên của Samsung</h2>
-                </a>
-                <br/>
-                <h5>Thanh niên &emsp; 6 giờ</h5>
-            </div>
-            <div class="tintuc-info">
-                <a href="https://vov.vn/cong-nghe/doanh-so-iphone-xs-va-iphone-xr-tham-hai-apple-san-xuat-lai-iphone-x-843717.vov" target="_blank" rel="noopener">
-                    <img src="img/tintuc/tintuc3.png" alt="Tin tức 3">
-                    <h2>Doanh số iPhone XS và iPhone XR thảm hại, Apple sản xuất lại iPhone X</h2>
-                </a>
-                <br/>
-                <h5>VOV &emsp; 6 giờ</h5>
-            </div>
-            <div class="tintuc-info">
-                <a href="http://vietq.vn/chiec-dien-thoai-thong-minh-nay-cua-lg-se-co-toi-16-camera-d151674.html" target="_blank" rel="noopener">
-                    <img src="img/tintuc/tintuc4.png" alt="Tin tức 4">
-                    <h2>Chiếc điện thoại thông minh này của LG sẽ có tới 16 Camera</h2>
-                </a>
-                <br/>
-                <h5>VietQ &emsp; 13 giờ</h5>
-            </div>
-            <div class="tintuc-info tintuc-info-last">
-                <a href="https://news.zing.vn/nhung-tieu-chi-ban-khong-nen-bo-qua-khi-mua-smartphone-2018-post894509.html" target="_blank" rel="noopener">
-                    <img src="img/tintuc/tintuc5.png" alt="Tin tức 5" class="tintuc-img">
-                    <h2>Những tiêu chí bạn không nên bỏ qua khi mua smartphone 2018</h2>
-                </a>
-                <br/>
-                <h5>Zing &emsp; 9 giờ</h5>
-            </div> 
+        </nav>
+    </header>
 
+    <main class="main-content">
+        <div class="container">
+            <h1>Tin tức</h1>
+            <div class="news-grid" style="margin-top:1rem;">
+                <div class="news-card">
+                    <a href="http://doanhnghiepvn.vn/cong-nghe/danh-gia-smartphone-chip-s660-ram-8-gb-gia-6-99-trieu-tai-viet-nam/2018112603315443" target="_blank" rel="noopener">
+                        <img src="img/tintuc/tintuc1.png" alt="Tin tức 1">
+                        <h3>Đánh giá smartphone chip S660, RAM 8 GB, giá 6,99 triệu tại Việt Nam</h3>
+                    </a>
+                    <small>Doanh nghiệp · 3 giờ</small>
+                </div>
+
+                <div class="news-card">
+                    <a href="https://thanhnien.vn/cong-nghe/kham-pha-smartphone-man-hinh-gap-duoc-dau-tien-cua-samsung-1027111.html" target="_blank" rel="noopener">
+                        <img src="img/tintuc/tintuc2.png" alt="Tin tức 2">
+                        <h3>Khám phá smartphone màn hình gập được đầu tiên của Samsung</h3>
+                    </a>
+                    <small>Thanh niên · 6 giờ</small>
+                </div>
+
+                <div class="news-card">
+                    <a href="https://vov.vn/cong-nghe/doanh-so-iphone-xs-va-iphone-xr-tham-hai-apple-san-xuat-lai-iphone-x-843717.vov" target="_blank" rel="noopener">
+                        <img src="img/tintuc/tintuc3.png" alt="Tin tức 3">
+                        <h3>Doanh số iPhone XS và iPhone XR thảm hại, Apple sản xuất lại iPhone X</h3>
+                    </a>
+                    <small>VOV · 6 giờ</small>
+                </div>
+
+                <div class="news-card">
+                    <a href="http://vietq.vn/chiec-dien-thoai-thong-minh-nay-cua-lg-se-co-toi-16-camera-d151674.html" target="_blank" rel="noopener">
+                        <img src="img/tintuc/tintuc4.png" alt="Tin tức 4">
+                        <h3>Chiếc điện thoại thông minh này của LG sẽ có tới 16 Camera</h3>
+                    </a>
+                    <small>VietQ · 13 giờ</small>
+                </div>
+
+                <div class="news-card">
+                    <a href="https://news.zing.vn/nhung-tieu-chi-ban-khong-nen-bo-qua-khi-mua-smartphone-2018-post894509.html" target="_blank" rel="noopener">
+                        <img src="img/tintuc/tintuc5.png" alt="Tin tức 5">
+                        <h3>Những tiêu chí bạn không nên bỏ qua khi mua smartphone 2018</h3>
+                    </a>
+                    <small>Zing · 9 giờ</small>
+                </div>
+            </div>
         </div>
+    </main>
 
-    </section>
-
-    <script> addContainTaiKhoan(); </script>
-
-    <div class="footer">
-        <script>addFooter();</script>
-        
-    </div>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Shop Phone. All rights reserved.</p>
+        </div>
+    </footer>
 
     <i class="fa fa-arrow-up" id="goto-top-page" onclick="gotoTop()"></i>
 

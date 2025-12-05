@@ -12,16 +12,11 @@
         crossorigin="anonymous">
 
     <!-- our files -->
-    <!-- css -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/topnav.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/taikhoan.css">
-    <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/baohanh.css">
+    <link rel="stylesheet" href="css/modern.css">
+    <link rel="stylesheet" href="css/animations.css">
     <!-- js -->
     <script src="data/products.js"></script>
-	<script src="js/dungchung.js"></script>
+    <script src="js/dungchung.js"></script>
 
     <script>
         window.onload = function () {
@@ -35,23 +30,60 @@
 
 <body>
 
-    <script>addTopNav();</script>
+    <!-- Modern header/navigation -->
+    <header class="header" role="banner">
+        <nav class="navbar" aria-label="Điều hướng chính">
+            <div class="nav-container">
+                <a href="index.html" class="logo" title="Trang chủ">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>SHOP PHONE</span>
+                </a>
 
-    <section style="min-height: 85vh">
-        <script>addHeader();</script>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Trang chủ</a></li>
+                    <li><a href="index.html#products">Sản phẩm</a></li>
+                    <li><a href="lienhe.html">Liên hệ</a></li>
+                </ul>
 
-        <table>
-            <tr>
-                <td colspan="4" class="header-table">
-                    <marquee behavior="scroll" direction=left>Các trung tâm bảo hành của Smartphone Store</marquee>
-                </td>
-            </tr>
-            <tr>
-                <th class="col1">STT</th>
-                <th class="col2">Địa chỉ</th>
-                <th class="col3">Điện thoại</th>
-                <th class="col4">Thời gian làm việc</th>
-            </tr>
+                <div class="nav-user">
+                    <div class="user-section" data-user-display>
+                        <button class="btn-login" onclick="toggleAuthModal(true)">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </button>
+                    </div>
+                    <a href="giohang.html" class="cart-icon" title="Giỏ hàng" aria-label="Giỏ hàng">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge" data-cart-count>0</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="banner-section">
+                <div class="banner-img">
+                    <marquee behavior="scroll" direction="left">Các trung tâm bảo hành của Smartphone Store</marquee>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Địa chỉ</th>
+                            <th>Điện thoại</th>
+                            <th>Thời gian làm việc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <!-- rows injected by script -->
+                    </tbody>
+                </table>
+            </div>
 
             <script>
                 var trungtam = [
@@ -72,31 +104,28 @@
                     ["76 Nguyễn Đình Chiểu, P 2, Tp. Cao Lãnh, Đồng Tháp"       , "(067)-3874 686"  , "8h00 - 17h00"]
                 ]
 
+                var tbody = document.querySelector('table.table tbody');
                 for (var i = 0; i < trungtam.length; i++) {
-                    var link = 'https://maps.google.com/maps?q=' + trungtam[i][0];
-                    document.write(`
-                        <tr>
-                            <td class="col1">` + (i + 1) + `</td>
-                            <td class="col2"> 
-                                <a href="`+link+`" target="_blank" title="Xem bản đồ">
-                                    ` + trungtam[i][0] +`
-                                </a>
-                            </td>
-                            <td class="col3">` + trungtam[i][1] +`</td>
-                            <td class="col4">` + trungtam[i][2] +`</td>
-                        </tr>
-                    `)
+                    var link = 'https://maps.google.com/maps?q=' + encodeURIComponent(trungtam[i][0]);
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding:12px; border-bottom:1px solid var(--gray-200);">${i+1}</td>
+                        <td style="padding:12px; border-bottom:1px solid var(--gray-200);"><a href="${link}" target="_blank">${trungtam[i][0]}</a></td>
+                        <td style="padding:12px; border-bottom:1px solid var(--gray-200);">${trungtam[i][1]}</td>
+                        <td style="padding:12px; border-bottom:1px solid var(--gray-200);">${trungtam[i][2]}</td>
+                    `;
+                    tbody.appendChild(tr);
                 }
             </script>
-        </table>
 
-    </section>
+        </div>
+    </main>
 
-    <script>addContainTaiKhoan(); </script>
-
-    <div class="footer">
-            <script>addFooter();</script>
-    </div>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Shop Phone. All rights reserved.</p>
+        </div>
+    </footer>
 
     <i class="fa fa-arrow-up" id="goto-top-page" onclick="gotoTop()"></i>
 

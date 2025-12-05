@@ -235,20 +235,74 @@ function addDonHang(dh) {
     var div = document.getElementsByClassName('listDonHang')[0];
 
     var s = `
-            <table class="listSanPham">
-                <tr> 
-                    <th colspan="6">
-                        <h3 style="text-align:center;"> Đơn hàng ngày: ` + new Date(dh.ngaymua).toLocaleString() + `</h3> 
-                    </th>
-                </tr>
-                <tr>
-                    <th>STT</th>
-                    <th>Sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                    <th>Thời gian thêm vào giỏ</th> 
-                </tr>`;
+<table style="
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+">
+    <tr> 
+        <th colspan="6" style="
+            background-color: #f1f1f1;
+            padding: 15px 10px;
+            border: 1px solid #ddd;
+        ">
+            <h3 style="
+                text-align: center;
+                color: #333;
+                margin: 0;
+                font-size: 1.5em;
+                font-weight: bold;
+            "> 
+                Đơn hàng ngày: ` + new Date(dh.ngaymua).toLocaleString() + `
+            </h3> 
+        </th>
+    </tr>
+    <tr>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #4CAF50;
+        ">STT</th>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            border: 1px solid #4CAF50;
+        ">Sản phẩm</th>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: right;
+            border: 1px solid #4CAF50;
+        ">Giá</th>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #4CAF50;
+        ">Số lượng</th>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: right;
+            border: 1px solid #4CAF50;
+        ">Thành tiền</th>
+        <th style="
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #4CAF50;
+        ">Thời gian thêm vào giỏ</th> 
+    </tr>`;
 
     var totalPrice = 0;
     for (var i = 0; i < dh.sp.length; i++) {
@@ -282,7 +336,7 @@ function addDonHang(dh) {
     tongTienTatCaDonHang += totalPrice;
 
     s += `
-                <tr style="font-weight:bold; text-align:center; height: 4em;">
+                <tr style="color:red;font-weight:bold; text-align:center; height: 4em;">
                     <td colspan="4">TỔNG TIỀN: </td>
                     <td class="alignRight">` + numToString(totalPrice) + ` ₫</td>
                     <td > ` + dh.tinhTrang + ` </td>
